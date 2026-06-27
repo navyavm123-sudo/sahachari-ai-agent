@@ -1,231 +1,36 @@
-# Delivery Partner API Documentation
+SAHACHARI DELIVERY INFORMATION
+==============================
 
-## Overview
-API endpoints for delivery partners to manage delivery jobs. All endpoints (except authentication) require JWT authentication with `DELIVERY` role.
+HOW DELIVERY WORKS
+When you place an order on Sahachari, it is first received by the store. The store prepares your order and marks it as ready. A delivery partner then accepts the job, picks up your order from the store, and delivers it to your address. You will be able to track each stage from the Orders screen in the app.
 
----
+ORDER STAGES FOR DELIVERY
+Your order goes through these stages:
+1. Placed - Your order has been received by the store.
+2. Ready - The store has packed your order and it is ready for pickup.
+3. Accepted - A delivery partner has accepted your order and is on the way to the store.
+4. Picked Up - The delivery partner has collected your order from the store and is on the way to you.
+5. Delivered - Your order has been successfully delivered to your address.
+6. Failed - The delivery attempt was unsuccessful. Sahachari support will contact you in this case.
+7. Cancelled - The order was cancelled before delivery.
 
-## Authentication
+DELIVERY TIMING
+Estimated delivery time is 30 to 45 minutes after your order is confirmed. Actual timing may vary depending on your location, store preparation time, and delivery partner availability.
 
-### Register Delivery Partner
-**Endpoint:** `POST /auth/register`
+DELIVERY CHARGES
+Delivery charges are calculated based on your pincode and selected delivery location. You can see the exact delivery charge before confirming your order at checkout. If you choose Self Pickup, there is no delivery charge.
 
-**Request:**
-```json
-{
-  "name": "Test User",
-  "email": "newuser123@store.com",
-  "password": "123456",
-  "role": "DELIVERY",
-  "address": "456 Delivery St, San Francisco",
-  "serviceablePincodes": ["94102", "94103"]
-}
-```
+SELF PICKUP OPTION
+If you prefer, you can select Self Pickup at checkout to collect your order yourself from the nearest Sahachari pickup point. Self Pickup has no delivery charge.
 
-**Response (201):**
-```json
-{
-  "id": "user_id",
-  "email": "newuser123@store.com",
-  "role": "DELIVERY",
-  "status": "ACTIVE",
-  "message": "Registration successful. Awaiting admin approval."
-}
-```
+SERVICEABLE AREAS
+Sahachari delivers to specific pincodes within its delivery zone. When you register or checkout, enter your pincode to confirm if delivery is available in your area. More areas are being added regularly.
 
-### Login
-**Endpoint:** `POST /auth/login`
+DELIVERY PARTNER
+Your order is delivered by a Sahachari delivery partner. Once your order is picked up, you can see the delivery partner details in the Orders screen. If you have any issue with delivery, contact Sahachari support through the app.
 
-**Request:**
-```json
-{
-  "email": "aaa.delivery@gmail.com",
-  "password": "Test@123"
-}
-```
+FAILED DELIVERY
+If delivery fails, for example because you were not available or the address could not be found, the order status will be marked as Failed. Please contact Sahachari support so we can help resolve the issue and arrange redelivery if possible.
 
-**Response (200):**
-```json
-{
-  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-}
-```
-
-**Note:** Include the token in all subsequent requests:
-```
-Authorization: Bearer <token>
-```
-
----
-
-## Order Management
-
-### Get Available Jobs (or My Jobs)
-**Endpoint:** `GET /delivery/orders?status=READY` or `GET /delivery/orders?mine=true`
-
-**Description:**
-- `status=READY`: Lists all unassigned orders ready for pickup
-- `mine=true`: Returns orders assigned to the authenticated delivery partner (same as `GET /delivery/orders/me`)
-
-**Note:** If you call `GET /delivery/orders` without `status=READY` or `mine=true`, the API currently returns an empty array.
-
-**Examples:**
-```
-GET /delivery/orders?status=READY
-GET /delivery/orders?mine=true
-```
-
-**Response:**
-```json
-[
-  {
-    "_id": "order_123",
-    "userId": {
-      "_id": "user_456",
-      "name": "John Doe"
-    },
-    "storeId": {
-      "_id": "store_789",
-      "name": "Main Store",
-      "address": "123 Main St"
-    },
-    "items": [
-      {
-        "productId": {
-          "_id": "prod_101",
-          "name": "Product Name",
-          "price": "10.99"
-        },
-        "quantity": 2,
-        "price": 10.99
-      }
-    ],
-    "totalAmount": 21.98,
-    "deliveryAddress": {
-      "street": "456 Delivery St",
-      "city": "San Francisco",
-      "zipCode": "94102",
-      "phone": "+1111111111",
-      "notes": "Ring doorbell twice"
-    },
-    "status": "READY",
-    "deliveryBoyId": null,
-    "createdAt": "2025-01-19T10:00:00.000Z",
-    "updatedAt": "2025-01-19T10:00:00.000Z"
-  }
-]
-```
-
-### Get My Assigned Jobs
-**Endpoint:** `GET /delivery/orders/me`
-
-**Description:** Returns all orders assigned to the authenticated delivery partner
-
-**Response:** Same structure as available jobs, but filtered by `deliveryBoyId`
-
-### Get Order Details
-**Endpoint:** `GET /delivery/orders/:id`
-
-**Description:** Fetch details of a specific order (must be assigned to you)
-
-**Response:** Single order object with full details
-
----
-
-## Delivery Workflow
-
-### 1. Accept Job
-**Endpoint:** `POST /delivery/orders/:id/accept`
-
-**Status:** `READY → ACCEPTED`
-
-**Description:** Accept an available delivery job
-
-**Request:** Empty body `{}`
-
-**Response:** Updated order with `deliveryBoyId` assigned and status changed to `ACCEPTED`
-
-### 2. Pickup Order
-**Endpoint:** `POST /delivery/orders/:id/pickup`
-
-**Status:** `ACCEPTED → PICKED_UP`
-
-**Description:** Confirm package picked up from store
-
-**Request:** Empty body `{}`
-
-**Response:** Updated order with status `PICKED_UP`
-
-### 3a. Deliver Order (Success)
-**Endpoint:** `POST /delivery/orders/:id/deliver`
-
-**Status:** `PICKED_UP → DELIVERED`
-
-**Description:** Mark delivery as completed successfully
-
-**Request:** Empty body `{}`
-
-**Response:** Updated order with status `DELIVERED`
-
-### 3b. Fail Delivery (Failure)
-**Endpoint:** `POST /delivery/orders/:id/fail`
-
-**Status:** `PICKED_UP → FAILED`
-
-**Description:** Mark delivery as failed (customer unavailable, wrong address, etc.)
-
-**Request:** Empty body `{}`
-
-**Response:** Updated order with status `FAILED`
-
----
-
-## Order Status Flow
-
-```
-PLACED → READY (Storekeeper) → ACCEPTED (Delivery) → PICKED_UP →
-  ↓                                             ↓
-DELIVERED                                  FAILED
-```
-
----
-
-## Error Responses
-
-| Status | Description |
-|--------|-------------|
-| 400 | Bad Request - Invalid input |
-| 400 | Bad Request - Action not allowed in current status (`Cannot transition from <STATUS> to <NEW_STATUS>`) |
-| 400 | Bad Request - Order not assigned to you (for pickup/deliver/fail when not assigned) |
-| 401 | Unauthorized - Missing/invalid token |
-| 403 | Forbidden - Not a delivery partner |
-| 404 | Not Found - Order doesn't exist / cannot transition (`Order not found or cannot transition to <NEW_STATUS>`) |
-| 404 | Not Found - Order doesn't exist or not assigned to you |
-| 500 | Server Error |
-
-**Example Error:**
-```json
-{
-  "statusCode": 404,
-  "message": "Order not found or not assigned to you",
-  "error": "Not Found"
-}
-```
-
-**Example Transition Error (status invalid):**
-```json
-{
-  "statusCode": 400,
-  "message": "Cannot transition from PLACED to ACCEPTED",
-  "error": "Bad Request"
-}
-```
-
-**Example Transition Error (order not found / already taken):**
-```json
-{
-  "statusCode": 404,
-  "message": "Order not found or cannot transition to ACCEPTED",
-  "error": "Not Found"
-}
-```
+CANCELLING BEFORE DELIVERY
+You can cancel your order at any time before it is picked up by the delivery partner. Once picked up, cancellation is not possible. Go to the Orders screen, select the order, and tap Cancel. Refunds for prepaid orders are processed within 2 to 3 business days.

@@ -1,0 +1,466 @@
+## What is Sahachari?
+Sahachari (സഹചാരി) is your trusted everyday grocery and delivery companion for households in Kerala, India. The name means "companion" or "fellow traveller" in Malayalam. Sahachari connects you directly with local vendors, farmers, and home producers for fresh, quality products at fair prices, focusing especially on villages and rural communities across Kerala.
+
+## What products does Sahachari sell?
+Sahachari offers a wide range of daily grocery essentials including:
+- Fresh vegetables: onions, tomatoes, potatoes, carrots, brinjal, ladies finger, capsicum, drumstick, raw banana, yam, pumpkin, beans, cucumber, cabbage, cauliflower, beetroot, radish, ginger, garlic
+- Fresh fruits: apples, bananas, mangoes, oranges, grapes, papaya, pineapple, watermelon, guava, pomegranate, lemon, chikoo, jackfruit, kiwi
+- Leafy greens: spinach, methi, coriander, palak, curry leaves, amaranth, fenugreek, mustard greens
+- Dairy products: milk, curd, paneer, butter, ghee
+- Grains and rice: various Kerala rice varieties, wheat flour (atta), dal, lentils, toor dal, moong dal
+- Oils and spices: coconut oil, mustard oil, turmeric, pepper, cardamom, chilli powder, cumin, coriander powder, mustard seeds
+- Groceries and daily essentials: dal, sugar, salt, tea, coffee, tamarind, coconut
+- Snacks and ready-to-eat items
+- Beverages: fresh juices, buttermilk, tender coconut water, tea, coffee
+- Homemade food: curries, pickles, snacks from local home kitchens
+- Fast food items: shawarma, sandwiches, rolls
+- Services: dishwashing, cleaning, sweeping, mopping
+- Rental items for household use
+
+## What services does Sahachari provide apart from groceries?
+Apart from groceries and food, Sahachari offers bookable home services:
+- Dishwashing service: professional kitchen vessel cleaning
+- Sweeping service: floor sweeping for homes
+- Mopping service: wet mopping and floor cleaning
+- General house cleaning service
+Book a service by saying "book dishwashing" or "show me services" to see available options with pricing.
+
+## Are the vegetables and fruits on Sahachari fresh?
+Yes! Sahachari delivers fresh vegetables and fruits directly sourced from local vendors and farmers in Kerala. We prioritise freshness and quality in every order. Leafy vegetables are typically harvested the same day. If you ever receive items that do not meet your expectations, please report it through the app for a refund or replacement.
+
+## Does Sahachari have organic or locally sourced items?
+Yes! Sahachari works closely with local farmers and home producers across Kerala. Many vegetables, fruits, and homemade food items are locally sourced and grown using traditional farming methods. Look for items described as "local", "organic", or "home-grown" in the product catalogue.
+
+## How does Sahachari support the local community?
+Sahachari is built to support local farmers, home producers, and small vendors by connecting them directly with households. Every purchase helps sustain local livelihoods and keeps food supply chains short and fresh.
+
+## What areas does Sahachari serve?
+Sahachari currently serves select areas in Kerala, India, with a special focus on village and rural communities. Coverage is growing regularly. Share your pincode and we'll confirm if delivery is available in your area. Sahachari does not deliver outside Kerala at this time.
+
+## How do I know if Sahachari delivers to my pincode?
+Enter your pincode during registration or checkout in the app. If your pincode is within the active delivery zone in Kerala, delivery options and charges will appear. If your pincode is not yet serviceable, the app will notify you and you can contact support to request coverage.
+
+## How do I place an order on Sahachari?
+Ordering is simple — just tell the assistant what you want in natural language:
+- Say "I want 2 kg onions" to add to your cart
+- Say "Add 500g spinach and 1 kg tomatoes"
+- Say "Show me fruits" to browse available fruits
+- Say "What's in my cart?" to review your cart
+- Say "Checkout" or "Place my order" to complete the purchase
+- Say "Track my order" to check delivery status
+You can also place orders through the Sahachari mobile app directly.
+
+## Can I order multiple items at once on Sahachari?
+Yes! You can add as many items as you need in a single order. Simply tell the chatbot everything you need in one message, for example: "I want 2 kg onions, 1 litre milk, and 500 g tomatoes." The chatbot will add all items to your cart at once.
+
+## How does delivery work on Sahachari?
+Sahachari delivers to serviceable pincodes in Kerala. Estimated delivery time is 30 to 45 minutes after order confirmation. Delivery charges vary by location and are calculated based on your pincode and selected delivery place at checkout. Self Pickup is also available at no delivery charge.
+
+## What are Sahachari's delivery timings?
+Sahachari delivers orders within 30 to 45 minutes after your order is confirmed, during standard business hours every day. If there is any delay due to weather or high demand, the delivery team will inform you through the app.
+
+## What are the delivery charges?
+Delivery charges depend on your order size and location. Many vendors offer free delivery above a minimum order value. Exact delivery charges are shown at checkout before you confirm your order.
+
+## Is there a minimum order value on Sahachari?
+No, Sahachari does not currently require a minimum order value to place an order. You can order as little or as much as you need. Delivery charges may apply based on your location, shown clearly at checkout.
+
+## What payment methods does Sahachari accept?
+Sahachari currently supports:
+1. Cash on Delivery (COD) — pay in cash when your order arrives
+2. Online payment options (UPI, cards, net banking)
+Payment options are shown at checkout.
+
+## What is the Self Pickup option on Sahachari?
+Self Pickup allows you to collect your order directly from the nearest Sahachari pickup point instead of getting it delivered to your home. This option has no delivery charge applied. Select it as your delivery method during checkout.
+
+## Can I schedule a delivery for later on Sahachari?
+Currently, Sahachari focuses on fast delivery within 30 to 45 minutes of order confirmation. Scheduled or future-dated deliveries are not available at this time. This feature may be added in future updates.
+
+## What happens if nobody is home during delivery?
+If you are not available at home during delivery, the Sahachari delivery partner will attempt to contact you on your registered mobile number. If you cannot be reached, the order may be returned. Please ensure someone is available at your delivery address.
+
+## Does Sahachari deliver during rain or bad weather?
+Sahachari's delivery team makes every effort to fulfil orders even during light rain. However, during severe weather conditions such as heavy rain, flooding, or storms in Kerala, deliveries may be delayed or temporarily paused for the safety of delivery partners. You will be notified through the app if affected.
+
+## Does Sahachari deliver on public holidays?
+Sahachari aims to serve customers every day including most public holidays. However, availability on certain holidays may vary depending on vendor and delivery partner availability. Check the app for any holiday notices or contact support for confirmation.
+
+## Can I have my order delivered to a different address?
+Yes, during checkout you can enter a different delivery address. Simply enter the pincode of the delivery location and select the address where you want the order delivered. Ensure the delivery pincode is within Sahachari's serviceable zones in Kerala.
+
+## What should I do if my order is delayed?
+If your order is taking longer than the estimated 30 to 45 minutes, check your order status in the Sahachari app under the Orders screen. If the delay is significant, contact Sahachari support through the Help section. Our team will check with the delivery partner and update you as soon as possible.
+
+## Can I gift groceries to someone else using Sahachari?
+Yes! During checkout, enter the recipient's delivery address and pincode instead of your own. Make sure the delivery address is within Sahachari's serviceable pincodes in Kerala. For Cash on Delivery, inform the recipient to keep cash ready.
+
+## Does Sahachari charge for packaging?
+Sahachari does not charge separately for standard product packaging. The prices shown in the app include the cost of the products as supplied by local vendors. Delivery charges are calculated separately and shown clearly at checkout.
+
+## How to register on Sahachari?
+To create a new customer account on Sahachari:
+1. Download the Sahachari app
+2. Tap "Register" and enter your name, email address, mobile number, and password
+3. Your email must be unique and your password must be at least 6 characters long
+4. Enter your serviceable pincode to confirm your delivery area
+5. On successful registration, you will receive an authentication token for login
+
+## How to login on Sahachari?
+1. Open the Sahachari app
+2. Enter your registered email address and password
+3. Tap "Login" — you will receive a JWT authentication token to access your account
+If you forget your password, contact Sahachari support for assistance.
+
+## How do I track my order?
+Say "track my order" or "order status" in the chat and the chatbot will show you the latest status. You can also go to the Orders screen in the app. Order statuses include: Processing, Confirmed, Out for Delivery, Delivered, Cancelled.
+
+## How do I know when my order is out for delivery?
+When your order is on its way, the status in the Orders screen will update to "Out for Delivery." You can check this anytime by asking the chatbot "track my order". The delivery partner will also contact you on your registered mobile number if needed.
+
+## I forgot what I ordered — can you show me my past orders?
+Yes! Say "show my orders" or "order history" and the chatbot will list all your past orders with their status and items. You can also view your complete order history in the Orders screen in the app.
+
+## Can I reorder a previous order on Sahachari?
+Yes! Go to the Orders screen in the Sahachari app, select the order you want to repeat, and tap Reorder. All available items from that order will be added to your cart automatically. You can also say "reorder my last order" or "repeat my previous order" to the chatbot and it will add the same items to your cart.
+
+## How do I cancel my order?
+You can cancel your order if it hasn't been picked up yet. Say "cancel my order" in the chat. Through the app, go to Orders, select the order, and tap Cancel. Note: Orders that are already Out for Delivery or Delivered cannot be cancelled. If you were charged, a refund will be processed within 2 to 3 business days.
+
+## Can I change my order after placing it?
+Once an order is confirmed, changes may not always be possible. If you need to modify your order, contact Sahachari support immediately through the app's Help section. If the order has not yet been picked up for delivery, the team will try their best to accommodate your request. Orders already Out for Delivery cannot be modified.
+
+## Can I add items to my order after placing it?
+No, items cannot be added to a confirmed order. You will need to place a new separate order for any additional items you need.
+
+## Can I cancel only part of my order on Sahachari?
+Partial cancellations of individual items within an order are not currently supported. If you need to cancel specific items, contact Sahachari support through the Help section as soon as possible after placing your order.
+
+## What happens if an item I ordered is out of stock?
+If an item you ordered becomes unavailable after your order is placed, the Sahachari team will contact you. You may receive a partial delivery for the available items, or you can choose to cancel the order if the missing item is essential.
+
+## What should I do if I receive a wrong item?
+If you receive an incorrect item, please contact Sahachari support immediately through the Help section in the app. Provide your order details and a description of the wrong item. Sahachari will arrange a replacement or refund as quickly as possible.
+
+## What if I entered the wrong delivery address?
+Contact Sahachari support immediately through the Help section in the app. If the order has not yet been dispatched, the team will try to update your delivery address. Once an order is Out for Delivery, the address cannot be changed.
+
+## What is the Sahachari wishlist?
+The wishlist lets you save items to buy later.
+- Add items: say "add 1 kg apples to my wishlist" or "save tomatoes to wishlist"
+- View wishlist: say "show my wishlist"
+- Order all wishlist items: say "order my wishlist"
+There is no strict limit on the number of items you can save to your wishlist.
+
+## How do I add items to my wishlist?
+Say "add 1 kg apples to my wishlist" or "save spinach for later." Items in your wishlist can be moved to the cart later by saying "order my wishlist."
+
+## How do I remove an item from my cart?
+Tell the chatbot "remove onions from cart" or "delete milk from cart" and the chatbot will remove the item immediately. You can also open your cart in the app and tap the remove button next to the item.
+
+## Can I ask the chatbot to clear my entire cart?
+Yes, say "clear my cart" or "empty my cart" and the chatbot will remove all items in one go. You can then begin adding fresh items.
+
+## What happens to my cart if I close the Sahachari app?
+Your cart is saved automatically. Items remain in your cart when you reopen the app so you can continue shopping anytime.
+
+## How do I know the total cost of my order before checkout?
+Ask the chatbot "show my cart" or "what is my cart total" at any point while shopping. It will list your current items along with the running cost. Delivery charges are also shown clearly before you confirm your order.
+
+## Can I ask the chatbot to check if my order status has not changed?
+You can ask the chatbot "track my order" to see your current status. If the status hasn't changed for longer than expected, contact Sahachari support through the Help section so the team can check directly with the delivery partner.
+
+## What is the refund policy on Sahachari?
+If you cancel an order for which you were charged, or if a payment was deducted without an order being placed, Sahachari will process a refund within 2 to 3 business days. To initiate a refund, contact Sahachari support through the Help section in the app with your order and payment details.
+
+## What should I do if my payment was deducted but order was not placed?
+If your payment was deducted but your order does not appear in the Orders screen, contact Sahachari support immediately through the Help section. Share your payment details and the amount deducted. The support team will either confirm your order or process a full refund within 2 to 3 business days.
+
+## The tomatoes or vegetables I received were rotten or spoiled — how do I get a refund?
+We're really sorry to hear that! If you receive any rotten, spoiled, damaged, or poor quality item, please:
+1. Go to My Orders in the app
+2. Select the affected order
+3. Tap Report an Issue and attach a photo if possible
+4. Our support team will resolve it within 24 hours
+You can also reach us at support@sahachari.in. You will receive a refund or replacement.
+
+## I received someone else's order entirely. What do I do?
+We apologise for this serious mix-up. Please do not consume the items. Here is what to do:
+1. Go to My Orders and tap Report an Issue
+2. Select "Wrong order delivered"
+3. Our team will arrange an immediate pickup and redeliver your correct order
+You will receive a full refund or re-delivery within 24 hours. For urgent help, contact support@sahachari.in
+
+## My cleaning person or service worker did not show up. What should I do?
+We sincerely apologise — this should not have happened. Please contact us immediately:
+- Email: support@sahachari.in
+- Or tap Help in the app and select "Service not arrived"
+We will either reschedule at the earliest available slot or process a full refund for the booking.
+
+## I was charged twice or double charged for my order. What should I do?
+We are sorry about the payment issue. To raise a refund request:
+1. Go to My Orders and select the order
+2. Tap Report an Issue and select "Payment problem"
+Refunds are typically processed within 3 to 5 business days back to your original payment method. For urgent cases, contact support@sahachari.in
+
+## What should I do if the delivery partner behaves rudely?
+Sahachari expects all delivery partners to treat customers with respect. If a delivery partner behaves rudely or inappropriately, please report the incident immediately through the Help section in the app. Provide details of the order and the incident. Sahachari will investigate and take appropriate action.
+
+## How do I report a problem with the Sahachari app?
+If you face any technical issues such as crashes, login problems, or payment errors, contact Sahachari support through the Help section in the app. Describe the problem clearly and the support team will investigate and resolve it within 24 hours on business days.
+
+## What should I do if the Sahachari app is not working?
+Try the following steps:
+1. Close the app completely and reopen it
+2. Check your internet connection
+3. Update the app to the latest version from the app store
+4. Restart your phone and try again
+If the problem continues, contact Sahachari support through the Help section.
+
+## How do I contact Sahachari support?
+For any issues, complaints, or queries, contact Sahachari support through:
+- The Help section in the Sahachari app
+- Email: support@sahachari.in
+Support is available during business hours. Response time is typically within 24 hours on business days.
+
+## How do I give feedback about my order on Sahachari?
+After your order is delivered, go to the Orders screen, select the delivered order, and leave your rating and comments. Your feedback helps Sahachari improve the quality of products and services for all customers in Kerala.
+
+## What are the freshness guarantees?
+Sahachari sources directly from local vendors and farmers, which means shorter supply chains and fresher products than supermarkets. Leafy vegetables are typically harvested the same day. If you receive anything that is not fresh, please report it through the app for a refund or replacement.
+
+## Can I ask the chatbot how to check the status of my refund?
+The chatbot can share basic order status, but for detailed refund processing details, contact Sahachari support directly through the Help section in the app, where the team can check your payment records.
+
+## I need stuff for making biryani. What do I need?
+For a classic vegetable biryani, you'll need:
+Vegetables: onions, tomatoes, carrots, potatoes, green peas
+Aromatics: ginger, garlic
+Spices: turmeric, chilli powder, cumin, coriander powder, cardamom, bay leaf
+Base: basmati rice, curd or yogurt, coconut oil
+You can tell the chatbot "I want onions, tomatoes, carrots, potatoes and ginger" and it will add everything to your cart at once.
+
+## I need ingredients for sambar. What vegetables should I buy?
+For a classic sambar you'll need:
+Base: toor dal (split pigeon peas), tamarind
+Vegetables: drumstick, brinjal, pumpkin, ladies finger (okra), carrot, shallots, tomato
+Spices: turmeric, chilli powder, coriander powder, mustard seeds, curry leaves
+You can tell the chatbot all your items in one message and it will add everything to your cart.
+
+## What ingredients do I need for curd rice?
+Curd rice needs just two essentials: cooked rice and curd, both available through Sahachari. For added flavour, a simple tempering with curry leaves, ginger, and green chilli makes it more flavourful. Mustard seeds and coconut oil are used if you have them at home.
+
+## What vegetables are good for avial?
+Traditional avial, a classic Kerala dish, uses a mix of vegetables such as drumstick, carrot, potato, raw banana, yam, and pumpkin, cooked together with coconut and curd for the classic Kerala flavour. Check the vegetables section in the app since exact availability depends on local vendors.
+
+## What vegetables are used in Kerala sadya or feast?
+A traditional Kerala sadya features vegetables such as drumstick, raw banana, yam, pumpkin, beans, cabbage, and bitter gourd across dishes like avial, thoran, and olan. Drumstick, raw banana, and yam are essential for a proper sadya spread.
+
+## What vegetables are used in Kerala-style thoran?
+Thoran, a traditional Kerala stir-fry, typically uses finely chopped vegetables like cabbage, beans, carrots, or beetroot mixed with grated coconut and a simple mustard and curry leaf tempering. Cabbage thoran and beans thoran are most popular.
+
+## Suggest ingredients for making chutney?
+Tomato chutney: tomatoes, onions, chilli powder, coriander, coconut oil
+Coconut chutney (a Kerala favourite): fresh coconut if available, green chilli, ginger
+Onion chutney: onions, chilli powder, coriander leaves, tamarind
+
+## What ingredients do I need for a simple dal?
+A simple dal needs split lentils (toor dal, moong dal, or masoor dal) as the base, along with onions and tomatoes for flavour. Turmeric and chilli powder from Sahachari's spice section round out the seasoning for a comforting everyday dish.
+
+## Suggest items for making tea or coffee at home?
+For your daily tea or coffee, you will need milk and your preferred tea or coffee powder from Sahachari's beverages section. Sugar and flavourings like ginger or cardamom can be added based on personal taste.
+
+## What are good items for a light breakfast?
+A light breakfast could include milk and a banana, paired with bread or your preferred packaged staple, along with tea or coffee. These everyday items are all available through Sahachari's grocery and dairy sections.
+
+## What should I buy for a weekly family grocery order?
+For a solid weekly family grocery order, consider:
+Staple vegetables: onions, tomatoes, potatoes, carrots (1-2 kg each)
+Dairy: milk, curd
+Protein: dal or lentils
+Grains: rice, wheat flour
+Spices: turmeric, chilli powder (if running low)
+Leafy greens: spinach or palak (order fresh, lasts 2-3 days)
+You can tell the chatbot everything you need in one message and it will add it all to your cart at once.
+
+## Can you suggest groceries for a small household of 2?
+For a small household of 2 people, here's a practical weekly starter list:
+- Fresh vegetables: 1 kg onions, 1 kg tomatoes, 500g potatoes, 250g carrots
+- Leafy greens: 500g spinach or palak (fresh, lasts 2-3 days)
+- Aromatics: 100g garlic, 50g ginger
+- Cooking essentials: 1 litre coconut oil, basic spice pack
+- Grains: 2-3 kg rice, 500g wheat flour (atta)
+- Protein: 500g dal or lentils
+- Dairy: 1 litre milk or 400g curd (can be ordered daily)
+Add items to cart by saying "add 1 kg onions" or browse by saying "show me vegetables".
+
+## Recommend items for a vegetarian dinner?
+Paneer is a good protein source. Mixed vegetables like potatoes and carrots paired with dal and rice make a complete, filling vegetarian dinner. Curd on the side adds a light, refreshing touch to the meal.
+
+## Suggest vegetables for making soup?
+Carrots, tomatoes, pumpkin, and onions blend well together for a warm, nutritious soup base. You can add other vegetables you have on hand for variety. All these staples are available fresh through Sahachari.
+
+## What vegetables are best for a quick stir fry?
+For a fast stir fry, vegetables that cook quickly and hold some crunch work best, such as carrots, beans, cabbage, and capsicum. Cut them into thin, even pieces for faster cooking.
+
+## Suggest vegetables for making pickle?
+Carrots and raw mango are popular choices for homemade pickles, along with lemon for a tangy variation. Availability of raw mango may depend on the season and local vendor stock.
+
+## Recommend grocery items for a festival or special occasion?
+For festival cooking, having rice, dal, milk, and butter or ghee on hand covers the basics for sweets and special dishes. Seasonal vegetables and fruits round out your festive menu. Check the Offers section in the app as Sahachari occasionally runs seasonal deals around festivals.
+
+## Suggest vegetables for a side dish with rice and dal?
+Potatoes, beans, or pumpkin can be lightly sautéed or curried as an easy side dish to accompany rice and dal. These vegetables are versatile and commonly stocked in Sahachari's grocery selection.
+
+## What ingredients do I need for a simple salad?
+A basic salad can be made with cucumber, tomatoes, carrots, and onions, cut fresh and tossed with a little salt and lemon. These vegetables are easy to order fresh through the Sahachari app or chatbot.
+
+## Recommend fruits for a summer refreshment or juice?
+Mangoes are especially popular for juices and smoothies during the summer season in Kerala, while bananas add a creamy texture when blended. Both are available fresh through Sahachari's fruit section.
+
+## Suggest fruits for weight loss?
+Apples are low in calories and high in fibre, which can help with satiety. Bananas offer natural energy and nutrients in a reasonable portion. For personalised dietary advice, it is best to consult a nutritionist.
+
+## Suggest ingredients for a fruit salad?
+For a quick fruit salad, combine apples, bananas, and mangoes for a good mix of texture and sweetness. Add a squeeze of lemon or a drizzle of honey at home for extra flavour.
+
+## What fruits are good for children?
+Bananas are gentle on digestion and provide quick energy. Apples offer fibre and vitamin C. Mangoes are rich in vitamin A and well-loved by kids for their sweetness. All three are available among Sahachari's regular fruit offerings.
+
+## What fruits are good during pregnancy?
+Bananas, apples, and mangoes are nutritious fruit choices often included in a balanced diet. However, dietary needs during pregnancy vary by individual, so it is best to consult your doctor or a nutritionist for guidance specific to your health.
+
+## Suggest fruits rich in Vitamin C?
+Mangoes and apples both offer vitamin C along with other nutrients. Citrus fruits like oranges and lemons are typically richer sources of vitamin C. Check the app to see if these are available in your area.
+
+## What vegetables are good for diabetic-friendly meals?
+Vegetables like beans, bitter gourd, ladies finger, and leafy greens are commonly considered suitable for diabetic-friendly diets due to their lower glycemic impact. However, dietary needs vary by individual, so it is best to consult a doctor or nutritionist for personalised guidance.
+
+## What vegetables are good for babies starting solid food?
+Carrots, pumpkin, and potatoes are often used in soft, mashed baby food recipes due to their mild taste and easy digestibility. Always consult a paediatrician before introducing new foods to ensure they suit your baby's specific needs and age.
+
+## Recommend vegetables for a healthy diet?
+Carrots are a good source of vitamin A, tomatoes provide vitamin C and antioxidants, and onions form a nutritious base for many meals. Leafy greens like spinach and methi are rich in iron and vitamins. Rotating these staples through your weekly orders is an easy way to keep your diet balanced.
+
+## Suggest low-cost vegetables for a hostel student or budget shopper?
+Onions, potatoes, and tomatoes tend to be the most affordable and versatile vegetables, since they form the base of most simple dishes and last a while without spoiling quickly. Dal is also an affordable protein option. These make a practical, budget-friendly base for a hostel student's grocery order on Sahachari.
+
+## Can I ask the chatbot to suggest a healthy grocery list for the week?
+Yes, you can ask the chatbot for healthy grocery suggestions, and it can help add suitable items to your cart. You can also ask it for suggestions based on your household size or budget.
+
+## Can I ask the chatbot for vegetarian protein options?
+Paneer and dal are good vegetarian protein options available through Sahachari. You can ask the chatbot for vegetarian protein sources and it may suggest these items from Sahachari's dairy and staples sections.
+
+## What vegetables are used for making biryani?
+Onions and tomatoes form the base masala for biryani, while carrots and potatoes work well in vegetable biryani specifically. You may also want whole spices like cumin and coriander from Sahachari's spice section, along with fresh ginger and garlic.
+
+## What are good dairy products to order on Sahachari?
+Sahachari stocks milk, curd, paneer, butter, and ghee. Dairy products are sourced fresh from local suppliers in Kerala. If you receive a dairy product that does not meet quality standards, contact Sahachari support immediately for a replacement or refund.
+
+## What is the Sahachari AI chatbot?
+The Sahachari AI chatbot is an intelligent shopping assistant built into the Sahachari app. It helps customers:
+- Search and add grocery items to their cart using natural language
+- View and manage their cart and wishlist
+- Place and track orders
+- Get answers to questions about Sahachari's products and services
+- Book home services like dishwashing and cleaning
+Simply type what you need in plain English or common Malayalam phrases and the chatbot will understand and assist you.
+
+## What languages does the Sahachari chatbot support?
+The Sahachari AI chatbot primarily supports English and understands common Malayalam phrases used in everyday shopping. You can type your grocery needs in simple English or familiar Malayalam terms and the chatbot will understand and assist you. Full Malayalam language support may be expanded in future updates.
+
+## Does Sahachari support Malayalam language?
+The Sahachari chatbot understands common Malayalam words and phrases used in everyday grocery shopping. You can mix Malayalam product names with English when chatting, for example "1 kg payar and 2 litres paal." Full Malayalam language interface support is planned for future updates.
+
+## Is the Sahachari app free to download?
+Yes, the Sahachari app is completely free to download and install. There are no subscription fees or charges for using the app or the AI chatbot. You only pay for the groceries you order and any applicable delivery charges, shown clearly at checkout.
+
+## Can I order from Sahachari without the app?
+Currently, Sahachari is best experienced through the Sahachari mobile app. The AI chatbot is available within the app. Sahachari does not currently support ordering through a website or phone call.
+
+## Can I use Sahachari if I do not have a smartphone?
+Sahachari is currently available only through its mobile app on smartphones. If you do not have a smartphone, you may ask a family member or trusted person to help you place orders through their device. Sahachari does not currently support ordering via phone calls, SMS, or a desktop website.
+
+## Can senior citizens or elderly people use Sahachari easily?
+Yes! Sahachari is designed to be simple and easy for everyone, including senior citizens. You can shop just by typing what you need in simple everyday language, for example "I need 1 kg rice and 2 litres milk." No technical knowledge is required. If you need help getting started, ask a family member to help set up the app.
+
+## Is my personal information safe on Sahachari?
+Yes, Sahachari takes your privacy and data security seriously. Your personal information such as your name, mobile number, email address, and delivery address is stored securely and is never shared with unauthorized parties. Only the information necessary for processing and delivering your orders is used.
+
+## How do I change my password on Sahachari?
+Go to your account settings in the Sahachari app and select Change Password. Enter your current password and then set a new password of at least 6 characters. If you have forgotten your current password, contact Sahachari support through the Help section.
+
+## How do I update my mobile number on Sahachari?
+Contact Sahachari support through the Help section in the app to update your mobile number. For security reasons, mobile number changes require verification by the support team. Have your registered email address ready to confirm your identity.
+
+## How do I update my delivery address on Sahachari?
+You can update your delivery address during checkout by entering your pincode and selecting your preferred delivery location. To change your registered address permanently, contact Sahachari support through the Help section.
+
+## What if I forgot my registered email on Sahachari?
+Contact Sahachari support through the Help section with your name and mobile number. The support team can verify your identity and help you recover or update your account email.
+
+## How do I delete my Sahachari account?
+Contact Sahachari support through the Help section in the app to request account deletion. Note that deleting your account will remove all your order history and saved information permanently.
+
+## Can I use multiple accounts on Sahachari?
+Each Sahachari account requires a unique email address. Using multiple accounts is not recommended as it can cause confusion with orders and delivery history. If you are having trouble with your existing account, contact Sahachari support.
+
+## Does Sahachari offer any discounts or offers?
+Sahachari occasionally offers discounts, seasonal deals, and special offers to customers. Keep an eye on the app for the latest promotions. Ask the chatbot "Are there any offers today?" to check current promotions.
+
+## Does Sahachari have a loyalty or rewards program?
+Information about a dedicated loyalty or rewards program is not available at this time. Keep checking the app for any new programs or offers that may be introduced. For the latest updates, contact Sahachari support.
+
+## How do I refer a friend to Sahachari?
+Share the Sahachari app with friends and ask them to register. Check the app for current referral offers and rewards. For more details on any referral program, contact Sahachari support through the Help section.
+
+## Can I use Sahachari for bulk or wholesale orders?
+Sahachari is primarily designed for everyday household grocery needs. For large or bulk orders, contact Sahachari support through the Help section to discuss availability and arrangements.
+
+## Can the chatbot remind me to reorder my usual groceries every week?
+Automatic reminders are not available yet. However, you can quickly repeat your usual grocery list anytime using the Reorder button on a past order in the Orders screen, or by telling the chatbot "reorder my last order."
+
+## Can I ask the chatbot to save my usual order as a template?
+While Sahachari does not yet have a dedicated saved template feature, you can use the wishlist to save items you order regularly, or use the Reorder button on a past order to quickly repeat your usual grocery list.
+
+## Can I ask the chatbot to suggest a substitute for an out-of-stock item?
+Yes, if an item you ask for is out of stock, you can ask the chatbot "what can I use instead of X?" and it will try to suggest a similar alternative based on what is currently available.
+
+## What happens if I ask the chatbot for an item Sahachari does not sell?
+If you ask for an item that Sahachari does not currently sell, the chatbot will inform you that it is unavailable. It may suggest a similar alternative product if one exists, or you can contact support to request the item be added in the future.
+
+## Can I ask the chatbot for a shopping list based on a budget?
+You can tell the chatbot your budget, for example "suggest groceries under 500 rupees," and it will try to recommend a combination of items that fits your budget based on current prices.
+
+## Can I ask the chatbot which vegetables are currently cheapest?
+You can ask the chatbot "which vegetables are cheapest right now?" and it will share current pricing information. Since prices depend on local vendor rates, the most affordable options can vary from day to day.
+
+## Can the chatbot help me decide between two similar products?
+If you are deciding between two similar items, you can ask the chatbot for details like price or availability for each, for example "is curd or paneer cheaper right now?" This can help you make a quicker decision.
+
+## Can I ask the chatbot what is in season right now?
+You can ask the chatbot what vegetables or fruits are currently in season. Availability depends on local vendor stock at the time of your order. Checking the products section in the app is also a good way to confirm current availability.
+
+## How do I ask the chatbot to book a dishwashing service?
+You can ask the chatbot something like "book a dishwashing service" or "show me services" and it will help you. You can also check the services section in the Sahachari app directly to see availability and book a convenient time slot.
+
+## Can I ask the chatbot for vegetable combinations for a specific recipe?
+Yes, mention the recipe name to the chatbot, for example "what vegetables do I need for avial?" and it will suggest the commonly used ingredients for that dish. You can then confirm and have them added to your cart.
+
+## Can I ask the chatbot to hold my order for a few hours before confirming?
+Items stay in your cart until you are ready. The order is only placed once you explicitly say "checkout" or "place my order," so you can take your time deciding before confirming.
+
+## Can the chatbot help me plan meals for the whole week?
+While the chatbot can help suggest ingredients for specific dishes you mention, a complete weekly meal planning feature is not currently available. You can ask it dish by dish and build your list that way.
+
+## Is there a way to compare prices of different vegetables before ordering?
+You can browse the products section in the Sahachari app to view prices of different vegetables side by side before deciding what to order. You can also ask the chatbot directly for the price of specific items.
+
+## Can I ask the chatbot about nutritional value of a product?
+You can ask the chatbot general questions like "is carrot good for eyes?" and it can share commonly known nutritional information. However, for specific dietary plans or medical conditions, it is best to consult a qualified nutritionist or doctor.
+
+## Can I ask the chatbot to split my order into two deliveries?
+Currently, Sahachari processes each order as a single delivery. If you need some items delivered at a different time, you will need to place separate orders for each batch.
+
+## What if I do not know the exact quantity I need?
+You can ask the chatbot for a suggestion based on your household size, for example "how much rice for a family of four?" Alternatively, you can order a smaller quantity first and place another order later if you need more.

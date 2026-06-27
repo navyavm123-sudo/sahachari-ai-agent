@@ -35,9 +35,10 @@ while True:
 
     # Step 2: Retrieve top 10 chunks
     results = collection.query(
-        query_embeddings=[query_embedding],
-        n_results=10
-    )
+    query_embeddings=[query_vector.tolist()], 
+    n_results=8,           # ← Increase from 4
+    include=["documents", "metadatas"]
+)
 
     docs = results["documents"][0]
 
