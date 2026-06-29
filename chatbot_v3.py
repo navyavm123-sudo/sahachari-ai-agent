@@ -134,13 +134,13 @@ def clean_auth_token(auth_token: str) -> str:
 # ─────────────────────────────────────────────────────────────────────────────
 
 DEFAULT_ENTITIES = {
-    "household_size":     None,    # "family of 4"
-    "budget_preference":  None,    # "budget" / "premium"
-    "delivery_time_pref": None,    # "morning" / "evening"
-    "allergies":          [],      # items the user is allergic to — NEVER suggest
-    "complaint_items":    [],      # items they complained about
+    "household_size":     None,
+    "budget_preference":  None,
+    "delivery_time_pref": None,
+    "allergies":          [],
+    "complaint_items":    [],
     "known_address":      None,
-    "last_seen_products": [],      # last 5 browsed products (for context)
+    "last_seen_products": [],
 }
 
 ENTITY_PATTERNS = {
@@ -179,7 +179,6 @@ DEFAULT_SESSION = {
     "last_mentioned_items": [],
     "slot_items":           [],
     "updated_at":           None,
-    # Analytics (lightweight, passive)
     "analytics": {
         "intents_this_session": [],
         "items_viewed":         [],
@@ -254,12 +253,12 @@ class SessionStore:
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Memory store  — Tier 1 (in-RAM / Mongo) + Tier 2 (ChromaDB user namespace)
+# Memory store
 # ─────────────────────────────────────────────────────────────────────────────
 
 class MemoryStore:
     MAX_HISTORY       = 20
-    SUMMARY_THRESHOLD = 14   # summarise when history exceeds this many turns
+    SUMMARY_THRESHOLD = 14
 
     def __init__(self, mongo_db):
         self._collection = mongo_db["user_memory"]
@@ -270,8 +269,6 @@ class MemoryStore:
             await self._collection.create_index("session_id", unique=True)
         except Exception as e:
             log.warning(f"Could not create memory indexes: {e}")
-
-    # ── Persistence ───────────────────────────────────────────────────────────
 
     async def get(self, session_id: str) -> dict:
         if session_id in self._cache:
@@ -299,7 +296,6 @@ class MemoryStore:
                 "spice_preference":     doc.get("spice_preference", "medium"),
                 "organic_preference":   doc.get("organic_preference", False),
                 "budget_hint":          doc.get("budget_hint", None),
-                # Tier-2 entity store
                 "entities":             doc.get("entities", {**DEFAULT_ENTITIES}),
             }
         self._cache[session_id] = memory
@@ -363,13 +359,7 @@ class MemoryStore:
         except Exception as e:
             log.warning(f"Failed to persist memory {session_id}: {e}")
 
-    # ── Semantic compression ──────────────────────────────────────────────────
-
     async def maybe_summarise(self, memory: dict):
-        """
-        When conversation history grows long, summarise the oldest half with
-        the local LLM to keep prompts short while preserving important context.
-        """
         history = memory["conversation_history"]
         if len(history) <= self.SUMMARY_THRESHOLD * 2:
             return
@@ -419,15 +409,11 @@ class MemoryStore:
             lines.append(f"  {role}: {content}")
         return "\n".join(lines)
 
-    # ── Turn management ───────────────────────────────────────────────────────
-
     def add_turn(self, memory: dict, user_msg: str, assistant_msg: str):
         memory["conversation_history"].append({"role": "user",      "content": user_msg})
         memory["conversation_history"].append({"role": "assistant", "content": assistant_msg})
         if len(memory["conversation_history"]) > self.MAX_HISTORY * 2:
             memory["conversation_history"] = memory["conversation_history"][-(self.MAX_HISTORY * 2):]
-
-    # ── Item recording with quantity memory ───────────────────────────────────
 
     def record_item_ordered(self, memory: dict, item_name: str, quantity: float = 1.0, unit: str = "piece"):
         key = item_name.strip().title()
@@ -435,19 +421,14 @@ class MemoryStore:
         if quantity and quantity > 0:
             memory.setdefault("item_quantities", {})[key] = {"qty": quantity, "unit": unit}
 
-    # ── Entity extraction (Tier-2 structured facts) ───────────────────────────
-
     def extract_entities(self, memory: dict, query: str):
         entities = memory.setdefault("entities", {**DEFAULT_ENTITIES,
                                                    "allergies": [], "complaint_items": [],
                                                    "last_seen_products": []})
-
-        # Household size
         m = ENTITY_PATTERNS["household_size"].search(query)
         if m:
             entities["household_size"] = m.group(0).strip()
 
-        # Allergy — critical safety field
         m = ENTITY_PATTERNS["allergy"].search(query)
         if m:
             allergen = m.group(1).strip().title()
@@ -455,26 +436,20 @@ class MemoryStore:
                 entities.setdefault("allergies", []).append(allergen)
                 log.info(f"Allergy recorded for session: {allergen}")
 
-        # Delivery time preference
         m = ENTITY_PATTERNS["delivery_time"].search(query)
         if m:
             entities["delivery_time_pref"] = m.group(1).lower()
 
-        # Budget preference
         m = ENTITY_PATTERNS["budget"].search(query.lower())
         if m:
             entities["budget_preference"] = m.group(1).lower()
 
-        # Complaint items — never suggest these again
         if COMPLAINT_PATTERNS.search(query):
             item = extract_item_name(query)
             if item and item not in entities.get("complaint_items", []):
                 entities.setdefault("complaint_items", []).append(item)
 
-    # ── Rich preference extraction ────────────────────────────────────────────
-
     def extract_preferences(self, memory: dict, query: str):
-        # Extract structured entities first
         self.extract_entities(memory, query)
 
         q        = query.lower()
@@ -516,21 +491,18 @@ class MemoryStore:
             except Exception:
                 pass
 
-        # Name
         name_match = re.search(r"\b(?:i am|i'm|my name is|call me)\s+([a-z][a-z]+)\b", q)
         if name_match:
             candidate = name_match.group(1).strip().title()
             if candidate not in {"Fine", "Good", "Okay", "Well", "Here", "Back", "Ready"}:
                 memory["name"] = candidate
 
-        # Location
         loc_match = re.search(
             r"(?:i(?:'m| am) (?:in|at|from)|deliver(?:ing)? to|my area is|near)\s+([a-z][a-z\s,]+?)(?:\.|,|$)", q,
         )
         if loc_match:
             memory["location"] = loc_match.group(1).strip().title()
 
-        # Sentiment
         pos   = len(re.findall(r"\b(great|thanks|perfect|love|good|awesome|excellent|happy)\b", q))
         neg   = len(re.findall(r"\b(bad|terrible|hate|wrong|broken|issue|problem|complaint)\b", q))
         delta = (pos - neg) * 0.1
@@ -542,8 +514,6 @@ class MemoryStore:
         memory["preferences"]["dislikes"] = dislikes
         memory["preferences"]["diet"]     = diet
 
-    # ── Safe suggestions — filter allergies / complaints ─────────────────────
-
     def get_safe_suggestions(self, memory: dict, candidates: list[str]) -> list[str]:
         entities        = memory.get("entities", {})
         blocked         = (entities.get("complaint_items", [])
@@ -551,15 +521,7 @@ class MemoryStore:
         blocked_lower   = {b.lower() for b in blocked}
         return [c for c in candidates if not any(b in c.lower() for b in blocked_lower)]
 
-    # ── LLM context builder (Tier-1 optimised) ───────────────────────────────
-
     def build_llm_context(self, memory: dict, session: dict, current_query: str) -> list[dict]:
-        """
-        Build an optimised message list for Qwen:
-          • Rich system prompt with user facts + safety constraints
-          • Compressed history summary (if present)
-          • Last 6 raw turns only (Qwen 0.5B has limited context)
-        """
         entities = memory.get("entities", {})
         parts    = [
             "You are Sahachari, a Kerala grocery delivery assistant.",
@@ -592,7 +554,6 @@ class MemoryStore:
         if session.get("last_browse_category"):
             parts.append(f"Currently browsing: {session['last_browse_category']}.")
 
-        # Strict rules
         parts += [
             "STRICT RULES:",
             "1. Answer ONLY from the provided Context.",
@@ -603,20 +564,16 @@ class MemoryStore:
 
         messages = [{"role": "system", "content": " ".join(parts)}]
 
-        # Add summary first if available
         if memory.get("conversation_summary"):
             messages.append({
                 "role":    "system",
                 "content": f"[Earlier session summary]:\n{memory['conversation_summary']}",
             })
 
-        # Add last 6 raw turns only
         recent = memory["conversation_history"][-12:]
         messages.extend(recent)
 
         return messages
-
-    # ── Context summary for RAG prompting ────────────────────────────────────
 
     def build_context_summary(self, memory: dict) -> str:
         parts = []
@@ -657,7 +614,7 @@ class MemoryStore:
         freq = memory.get("frequent_items", {})
         if not freq:
             return []
-        safe = self.get_safe_suggestions(memory, list(freq.keys()))
+        safe = self.get_safe_suggestions(memory, list(freq.keys())) if memory_store else list(freq.keys())
         return [k for k, _ in sorted(
             [(k, freq[k]) for k in safe], key=lambda x: x[1], reverse=True
         )[:n]]
@@ -675,12 +632,18 @@ class MemoryStore:
 # ─────────────────────────────────────────────────────────────────────────────
 
 INTENT_KEYWORDS = {
-    "view_cart":      ["view cart", "show cart", "my cart", "what's in my cart",
-                       "cart items", "see cart"],
-    "wishlist_remove":["remove from wishlist", "delete from wishlist", "remove wishlist",
-                       "clear wishlist", "empty wishlist"],
-    "wishlist":       ["show wishlist", "view wishlist", "my wishlist",
-                       "save for later", "add to wishlist"],
+    "view_cart": [
+        "view cart", "show cart", "show my cart", "my cart", "what's in my cart",
+        "cart items", "see cart", "display cart", "check cart", "open cart",
+    ],
+    "wishlist_remove": [
+        "remove from wishlist", "delete from wishlist", "remove wishlist",
+        "clear wishlist", "empty wishlist",
+    ],
+    "wishlist": [
+        "show wishlist", "view wishlist", "my wishlist",
+        "save for later", "add to wishlist",
+    ],
     "status": [
         "order status", "track my order", "where is my order", "track order",
         "track my current order", "current order status",
@@ -690,24 +653,40 @@ INTENT_KEYWORDS = {
         "previous orders", "show all orders",
         "show my last order", "show last order", "show my order",
         "show my recent order", "last order", "recent order", "my last order",
+        "status of all orders", "status of orders", "show all orders",
+        "show me all orders", "all orders", "list all orders",
     ],
     "cancel":     ["cancel my order", "cancel order", "stop my order", "cancel"],
-    "browse":     ["what do you have", "available items", "list all products",
-                   "show catalogue", "show me all"],
-    "clear_cart": ["clear cart", "clear my cart", "empty cart", "empty my cart",
-                   "remove everything from cart", "remove everything",
-                   "delete everything from cart", "remove all from cart",
-                   "delete all items", "clear all items"],
-    "delete_cart":["remove from cart", "delete from cart", "remove item", "delete item",
-                   "take out", "remove my", "delete my"],
-    "checkout":   ["place my order", "confirm order", "checkout", "place order",
-                   "proceed to payment"],
-    "product_info":["find", "search for", "look for", "is available", "available today",
-                    "price of", "how much is", "how much does", "how much do",
-                    "tell me about", "details of", "what is the price",
-                    "show me", "is there", "do you have", "in stock", "stock of", "cost of"],
-    "order":      ["order my wishlist", "buy", "add to cart", "get me",
-                   "i want", "i need", "want to buy"],
+    "browse": [
+        "what do you have", "available items", "list all products",
+        "show catalogue", "show me all",
+        "show the available products", "show available products",
+        "all products", "all items", "list products", "list items",
+    ],
+    "clear_cart": [
+        "clear cart", "clear my cart", "empty cart", "empty my cart",
+        "remove everything from cart", "remove everything",
+        "delete everything from cart", "remove all from cart",
+        "delete all items", "clear all items",
+    ],
+    "delete_cart": [
+        "remove from cart", "delete from cart", "remove item", "delete item",
+        "take out", "remove my", "delete my",
+    ],
+    "checkout": [
+        "place my order", "confirm order", "checkout", "place order",
+        "proceed to payment",
+    ],
+    "product_info": [
+        "find", "search for", "look for", "is available", "available today",
+        "price of", "how much is", "how much does", "how much do",
+        "tell me about", "details of", "what is the price",
+        "show me", "is there", "do you have", "in stock", "stock of", "cost of",
+    ],
+    "order": [
+        "order my wishlist", "buy", "add to cart", "get me",
+        "i want", "i need", "want to buy",
+    ],
     "service_booking": [
         "book a service", "book service", "schedule service",
         "book dishwashing", "book cleaning", "book dish wash",
@@ -748,16 +727,28 @@ WORD_TO_NUM = {
     "half": 0.5, "dozen": 12, "a": 1, "an": 1,
 }
 
+# FIX: Put multi-char units before single-char l/g to avoid partial matches
+# Also use \b word boundaries on single-char units
 UNIT_NORMALISE = {
-    "kg": "kg", "kgs": "kg", "kilo": "kg", "kilogram": "kg",
-    "g": "g", "gm": "g", "gram": "g",
-    "l": "litre", "ltr": "litre", "liter": "litre",
-    "ml": "ml",
+    "kg": "kg", "kgs": "kg", "kilo": "kg", "kilogram": "kg", "kilograms": "kg",
+    "kilos": "kg",
+    "g": "g", "gm": "g", "gram": "g", "grams": "g", "gms": "g",
+    "l": "litre", "ltr": "litre", "liter": "litre", "litre": "litre", "litres": "litre",
+    "liters": "litre",
+    "ml": "ml", "mls": "ml",
     "dozen": "dozen",
-    "piece": "piece", "pc": "piece",
-    "packet": "packet", "pack": "packet",
-    "bunch": "bunch", "box": "box",
+    "piece": "piece", "pc": "piece", "pieces": "piece", "pcs": "piece",
+    "packet": "packet", "pack": "packet", "packets": "packet",
+    "bunch": "bunch", "bunches": "bunch",
+    "box": "box", "boxes": "box",
 }
+
+# FIX: Multi-char alternatives first, then single-char with word boundary
+UNIT_WORDS_RE = (
+    r"(kilograms?|kilos?|kg|litres?|liters?|ltr|grams?|gms?|mls?|ml|"
+    r"dozen|pieces?|pcs?|packets?|bunches?|boxes?|box|"
+    r"l(?=\s|$)|g(?=\s|$))"
+)
 
 STOP_WORDS = {
     "order", "food", "delivery", "item", "please", "want", "need", "get", "buy",
@@ -772,11 +763,8 @@ STOP_WORDS = {
     "someone", "person", "people", "anyone", "i",
 }
 
-UNIT_WORDS_RE = (
-    r"(kilograms?|kilos?|kg|grams?|gms?|g|litres?|liters?|ltr|mls?|ml|"
-    r"dozen|pieces?|pcs?|packets?|bunches?|boxes?|box)\b"
-)
-NUM_WORDS_RE = r"(\d+\.?\d*|\b(?:half|one|two|three|four|five|six|seven|eight|nine|ten|dozen|a|an)\b)"
+# FIX: Updated NUM_WORDS_RE to support leading-dot decimals like .5
+NUM_WORDS_RE = r"(\d*\.?\d+|\b(?:half|one|two|three|four|five|six|seven|eight|nine|ten|dozen|a|an)\b)"
 
 TYPO_MAP = {
     "ttoday": "today", "todday": "today", "todat": "today",
@@ -871,7 +859,6 @@ RECIPE_PATTERNS = re.compile(
     re.IGNORECASE,
 )
 
-# NEW: Conversation repair signals
 REPAIR_SIGNALS = re.compile(
     r"\b(that'?s? (wrong|not right|incorrect|not what i (meant|asked|wanted|said))|"
     r"no[,.]?\s+(i (said|meant|asked|wanted)|that'?s? not)|"
@@ -935,12 +922,14 @@ KNOWN_VEGETABLES = {
     "leafy", "greens", "fenugreek", "amaranth", "mustard", "curry leaves",
 }
 
+# FIX: Added end-of-string "now" pattern
 BUY_NOW_PATTERNS = re.compile(
     r"\b(buy now|order now|purchase now|get it now|want to buy now"
     r"|i want\b.{0,30}\bnow\b"
     r"|buy\b.{0,30}\bnow\b"
     r"|order\b.{0,30}\bnow\b"
-    r"|\bnow\b.{0,10}\b(buy|order|get|purchase)\b)",
+    r"|\bnow\b.{0,10}\b(buy|order|get|purchase)\b"
+    r"|\bnow\s*[.!?]?$)",
     re.IGNORECASE,
 )
 
@@ -1045,7 +1034,6 @@ def build_cross_sell_hint(cart_item_names: list[str], memory: dict | None = None
                         suggestions.append(comp)
     if not suggestions:
         return None
-    # Filter out allergies / complaint items
     if memory:
         entities    = memory.get("entities", {})
         blocked     = (entities.get("allergies", []) + entities.get("complaint_items", []))
@@ -1055,6 +1043,16 @@ def build_cross_sell_hint(cart_item_names: list[str], memory: dict | None = None
         return None
     shown = suggestions[:3]
     return "💡 You might also need: " + ", ".join(shown) + ". Want me to add any?"
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Simple stemmer for upsell dedup
+# ─────────────────────────────────────────────────────────────────────────────
+
+def simple_stem(name: str) -> str:
+    """Remove trailing s for basic singular matching."""
+    n = name.lower().strip()
+    return n[:-1] if n.endswith("s") else n
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -1068,6 +1066,9 @@ def is_non_grocery_mismatch(product_name: str, query_text: str) -> bool:
 
 
 def preprocess_fractions(q: str) -> str:
+    # FIX: Handle leading-dot decimals like .5 → 0.5
+    q = re.sub(r'(?<!\d)\.(\d+)', r'0.\1', q)
+    # Handle fractions like 1/2 → 0.5
     return re.sub(
         r'\b(\d+)/(\d+)\b',
         lambda m: str(round(int(m.group(1)) / int(m.group(2)), 4)),
@@ -1118,7 +1119,8 @@ def looks_like_category_browse(q: str) -> bool:
     return bool(re.search(
         r"\b(fruits?|vegetables?|veg|leafy|greens?|beverages?|drinks?|juice|"
         r"snacks?|groceries|grocery|fast food|fastfood|homemade|home made|"
-        r"services?|rent|rental)\b", q,
+        r"services?|rent|rental|products?|items?|catalogue|catalog)\b",
+        q,
     ))
 
 
@@ -1164,21 +1166,26 @@ def extract_grocery_items(query: str) -> list:
     q = preprocess_fractions(q)
     q = re.sub(r"[^\w\s.]", " ", q)
     q = q.strip().replace(",", " and ")
-    q = re.sub(rf"(\d){UNIT_WORDS_RE}(?=\s|$)", r"\1 \2", q)
+    # FIX: ensure digit immediately followed by unit gets a space inserted
+    q = re.sub(rf"(\d)({UNIT_WORDS_RE})(?=\s|$)", r"\1 \2", q)
 
     segments = re.split(r"\band\b|\bplus\b", q)
     items    = []
+
+    # FIX: Updated pattern — multi-char units listed first in UNIT_WORDS_RE
     pattern  = (
         rf"\b{NUM_WORDS_RE}\b"
         rf"\s*(?:{UNIT_WORDS_RE})?"
         r"\s*(?:of\s+)?([a-z][a-z]+(?:\s+[a-z][a-z]+){0,3})"
     )
+
     for segment in segments:
         segment = segment.strip()
         if not segment:
             continue
         matches = list(re.finditer(pattern, segment))
         if not matches:
+            # No quantity specified — treat whole segment as item name
             clean_words = [w for w in segment.split() if w.strip() not in STOP_WORDS]
             if clean_words:
                 item_name = " ".join(clean_words).strip()
@@ -1190,9 +1197,12 @@ def extract_grocery_items(query: str) -> list:
             item_words = [w for w in raw_item.split() if w not in STOP_WORDS and len(w) >= 2]
             if not item_words:
                 continue
-            quantity = float(raw_qty) if raw_qty.replace(".", "", 1).isdigit() \
-                       else float(WORD_TO_NUM.get(raw_qty, 1.0))
-            unit     = UNIT_NORMALISE.get(raw_unit, "piece") if raw_unit else "piece"
+            try:
+                quantity = float(raw_qty) if raw_qty.replace(".", "", 1).isdigit() \
+                           else float(WORD_TO_NUM.get(raw_qty, 1.0))
+            except (ValueError, TypeError):
+                quantity = 1.0
+            unit = UNIT_NORMALISE.get(raw_unit, "piece") if raw_unit else "piece"
             items.append({"item": " ".join(item_words).title(), "quantity": quantity, "unit": unit})
     return items
 
@@ -1204,8 +1214,11 @@ def parse_quantity_reply(query: str):
         return None, None
     raw_qty  = m.group(1)
     raw_unit = m.group(2)
-    quantity = float(raw_qty) if raw_qty.replace(".", "", 1).isdigit() \
-               else float(WORD_TO_NUM.get(raw_qty, 1.0))
+    try:
+        quantity = float(raw_qty) if raw_qty.replace(".", "", 1).isdigit() \
+                   else float(WORD_TO_NUM.get(raw_qty, 1.0))
+    except (ValueError, TypeError):
+        quantity = 1.0
     unit = UNIT_NORMALISE.get(raw_unit, "piece") if raw_unit else "piece"
     return quantity, unit
 
@@ -1266,7 +1279,7 @@ def update_entity_tracker(session: dict, items: list[str]):
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Intent detection  — scored multi-signal approach
+# Intent detection — scored multi-signal approach
 # ─────────────────────────────────────────────────────────────────────────────
 
 @dataclass
@@ -1276,18 +1289,25 @@ class IntentScore:
     signals: list[str]     = field(default_factory=list)
 
 
+CHECKOUT_EXACT_PHRASES = {
+    "checkout", "check out", "place order", "place my order",
+    "confirm order", "proceed to payment", "proceed to checkout",
+    "complete my order", "complete order",
+}
+
+
 def detect_intent(query: str, session: dict | None = None, memory: dict | None = None) -> tuple[str, float]:
-    """
-    Score every intent independently and return the winner.
-    All signals logged so misclassifications are easy to debug.
-    """
+    log.info(f"detect_intent raw input: {repr(query)}")
     q = normalize_query(query.lower().strip())
+    log.info(f"detect_intent normalized q: {repr(q)}")
 
     # ── Fast-path exact matches ──────────────────────────────────────────────
     if q in {"hi", "hello", "hey", "namaste", "good morning", "good evening", "good afternoon"}:
         return "greeting", 1.0
     if q in CLOSING_WORDS:
         return "courtesy", 1.0
+    if q in CHECKOUT_EXACT_PHRASES or query.strip().lower() in CHECKOUT_EXACT_PHRASES:
+        return "checkout", 1.0
     if PREFERENCE_STATEMENT_RE.search(q):
         return "preference", 1.0
     if REPAIR_SIGNALS.search(q):
@@ -1306,6 +1326,9 @@ def detect_intent(query: str, session: dict | None = None, memory: dict | None =
         if matches:
             boost(intent, matches * 0.4, f"keyword_match:{matches}")
 
+    if any(kw in q for kw in INTENT_KEYWORDS["checkout"]):
+        boost("checkout", 1.2, "checkout_keyword_extra_boost")
+
     # ── Regex signals ────────────────────────────────────────────────────────
     if COMPLAINT_PATTERNS.search(q):               boost("complaint",       1.5, "complaint_regex")
     if REORDER_PATTERNS.search(q):                 boost("reorder",         1.5, "reorder_regex")
@@ -1317,6 +1340,23 @@ def detect_intent(query: str, session: dict | None = None, memory: dict | None =
     if looks_like_service_query(q):                boost("rag",             0.8, "denied_service")
     if looks_like_category_browse(q):              boost("browse",          0.9, "category_browse")
     if looks_like_price_filter(q):                 boost("browse",          0.7, "price_filter")
+
+    if re.search(r"\b(add|put|get|buy|order)\b.{0,20}\b(into|to|in)\b.{0,10}\b(my\s+)?cart\b", q):
+        boost("order",     0.8, "add_to_cart_phrase")
+        boost("view_cart", -0.8, "suppress_view_cart_on_add")
+
+    if re.search(r"\bcart\b", q) and not re.search(
+        r"\b(add|put|remove|delete|clear|empty|drop|buy|order|get)\b", q
+    ):
+        boost("view_cart", 1.0, "cart_keyword_passive")
+
+    # FIX: Expanded show_all orders detection
+    if re.search(
+        r"\b(status of|show|list).{0,10}\b(all|every|my)?\s*orders?\b", q
+    ) or re.search(
+        r"\b(show my orders|my orders|show orders|order history|past orders|previous orders)\b", q
+    ):
+        boost("status", 1.8, "all_orders_regex")
 
     if re.search(r"\b(track|where is|status of|check).{0,20}\border\b", q) or \
        re.search(r"\border\b.{0,20}\b(status|tracking|whereabouts)\b", q):
@@ -1349,7 +1389,7 @@ def detect_intent(query: str, session: dict | None = None, memory: dict | None =
     # ── Structural signals ───────────────────────────────────────────────────
     if re.match(r"^(add|buy|order|get|i want|i need)\b", q):
         boost("order", 0.6, "action_verb_start")
-    if re.match(r"^(show|list|what|display)\b", q):
+    if re.match(r"^(show|list|display)\b", q) and "order" not in q and "cart" not in q:
         boost("browse", 0.4, "browse_verb_start")
     if re.match(r"^(remove|delete)\s+\w+", q) and "wishlist" not in q:
         boost("delete_cart", 0.6, "remove_verb_start")
@@ -1388,7 +1428,15 @@ def detect_intent(query: str, session: dict | None = None, memory: dict | None =
 
     if winner.score == 0:
         return "rag", 0.3
-    return winner.intent, min(winner.score / 2.0, 1.0)   # normalise to [0,1]
+
+    scores_list = sorted([s.score for s in scores.values()], reverse=True)
+    sole_winner = len(scores_list) < 2 or scores_list[1] == 0
+    raw_confidence = min(winner.score / 2.0, 1.0)
+    if sole_winner:
+        raw_confidence = max(raw_confidence, 0.5)
+    if winner.intent == "checkout":
+        raw_confidence = max(raw_confidence, 0.5)
+    return winner.intent, raw_confidence
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -1426,33 +1474,27 @@ def personalise_response(
     intent: str,
     items_just_added: list[str] | None = None,
 ) -> str:
-    """
-    Post-processing: inject personalisation hints without changing the core response.
-    """
     name = memory.get("name")
 
-    # First-time name greeting
     if name and not session.get("_greeted_with_name") and intent == "greeting":
         session["_greeted_with_name"] = True
         response = response.replace("Welcome to Sahachari", f"Welcome to Sahachari, {name}", 1)
         response = response.replace("Welcome back to Sahachari", f"Welcome back, {name}!", 1)
 
-    # Upsell frequently ordered items when something was just added to cart
     freq = memory.get("frequent_items", {})
     if freq and items_just_added and intent == "order":
         top = max(freq, key=freq.get)
-        if top.lower() not in " ".join(items_just_added).lower() \
-                and "added!" in response:
+        # FIX: Use stem comparison to avoid suggesting item just added (e.g. "Apples" vs "Apple")
+        added_stems = {simple_stem(i) for i in items_just_added}
+        if simple_stem(top) not in added_stems and "added!" in response:
             safe = memory_store.get_safe_suggestions(memory, [top]) if memory_store else [top]
             if safe:
                 response += f"\n\n💡 You usually also order **{safe[0]}** — want me to add it?"
 
-    # Cart abandonment nudge
     if intent == "clear_cart":
         if detect_cart_abandonment_risk(session):
             response += "\n\n💬 Having trouble finding what you need? Just tell me what you're looking for!"
 
-    # Allergy reminder when items are suggested
     entities  = memory.get("entities", {})
     allergies = entities.get("allergies", [])
     if allergies and items_just_added:
@@ -1671,7 +1713,7 @@ async def find_product_id(item_name: str, auth_token: str):
         log.info(f"Product cache hit: {cache_key!r}")
         return _product_cache[cache_key]
 
-    clean_name  = cache_key
+    clean_name = cache_key
     if not clean_name:
         return None, None
     query_words = set(w for w in re.findall(r"[a-z]+", clean_name) if len(w) >= 3)
@@ -1688,11 +1730,25 @@ async def find_product_id(item_name: str, auth_token: str):
         return len(query_words & cand_words) > 0
 
     headers = {"Authorization": auth_token}
-    if clean_name.endswith("oes"):       alt = clean_name[:-2]
-    elif clean_name.endswith("ies"):     alt = clean_name[:-3] + "y"
-    elif clean_name.endswith("s") and not clean_name.endswith("ss"): alt = clean_name[:-1]
-    else:                                alt = clean_name + "s"
-    search_terms = [t for t in [item_name, alt.title() if alt != clean_name else ""] if t]
+
+    # FIX: More comprehensive plural/singular alternates
+    alts = []
+    if clean_name.endswith("oes"):
+        alts.append(clean_name[:-2])          # tomatoes → tomato
+    elif clean_name.endswith("ies"):
+        alts.append(clean_name[:-3] + "y")    # berries → berry
+    elif clean_name.endswith("s") and not clean_name.endswith("ss"):
+        alts.append(clean_name[:-1])           # onions → onion
+    else:
+        alts.append(clean_name + "s")          # onion → onions
+
+    # Also add stem without last char if ends in s (catches "carrots" → "carrot")
+    if clean_name.endswith("s") and len(clean_name) > 3:
+        stem = clean_name[:-1]
+        if stem not in alts:
+            alts.append(stem)
+
+    search_terms = [t for t in [item_name] + [a.title() for a in alts] if t]
 
     for term in search_terms:
         try:
@@ -1857,19 +1913,26 @@ async def _add_single_item_to_cart(
                 json={"quantity": new_qty},
                 headers=headers,
             )
+            if response.status_code in OK_STATUSES:
+                qty_label = format_qty(raw_qty, unit)
+                total_label = format_qty(new_qty, unit)
+                return f"✅ {matched_name} — {qty_label} added! (Total in cart: {total_label})", True
+            else:
+                log.warning(f"Cart PATCH failed — body: {response.text}")
+                return f"❌ Failed to update {matched_name} ({response.status_code}).", False
         else:
             response = await http_client.post(
                 f"{NESTJS_BACKEND_URL}/customer/cart",
                 json={"productId": product_id, "quantity": cart_quantity},
                 headers=headers,
             )
+            if response.status_code in OK_STATUSES:
+                qty_label = format_qty(raw_qty, unit)
+                return f"✅ {matched_name} — {qty_label} added!", True
+            else:
+                log.warning(f"Cart POST failed — body: {response.text}")
+                return f"❌ Failed to add {matched_name} ({response.status_code}).", False
 
-        if response.status_code in OK_STATUSES:
-            qty_label = format_qty(raw_qty, unit)
-            return f"✅ {matched_name} — {qty_label} added!", True
-        else:
-            log.warning(f"Cart POST/PATCH failed — body: {response.text}")
-            return f"❌ Failed to add {matched_name} ({response.status_code}).", False
     except httpx.TimeoutException:
         return f"❌ Timed out adding {matched_name}. Please try again.", False
     except httpx.ConnectError:
@@ -1964,8 +2027,11 @@ async def update_nestjs_cart_quantity(query: str, auth_token: str) -> str:
 
     raw_qty  = m.group(2)
     raw_unit = m.group(3) if m.lastindex >= 3 else None
-    quantity = float(raw_qty) if raw_qty.replace(".", "", 1).isdigit() \
-               else float(WORD_TO_NUM.get(raw_qty, 1.0))
+    try:
+        quantity = float(raw_qty) if raw_qty.replace(".", "", 1).isdigit() \
+                   else float(WORD_TO_NUM.get(raw_qty, 1.0))
+    except (ValueError, TypeError):
+        quantity = 1.0
     unit          = UNIT_NORMALISE.get(raw_unit, "piece") if raw_unit else "piece"
     cart_quantity = int(quantity) if quantity == int(quantity) else quantity
 
@@ -2341,11 +2407,23 @@ async def _fetch_single_product_block(item_name: str, token: str) -> str:
     item_name  = normalise_service_name(item_name)
     clean_name = item_name.lower()
 
-    if clean_name.endswith("oes"):       alt = clean_name[:-2]
-    elif clean_name.endswith("ies"):     alt = clean_name[:-3] + "y"
-    elif clean_name.endswith("s") and not clean_name.endswith("ss"): alt = clean_name[:-1]
-    else:                                alt = clean_name + "s"
-    search_terms = [item_name, alt.title()]
+    # FIX: More comprehensive alternates
+    alts = []
+    if clean_name.endswith("oes"):
+        alts.append(clean_name[:-2])
+    elif clean_name.endswith("ies"):
+        alts.append(clean_name[:-3] + "y")
+    elif clean_name.endswith("s") and not clean_name.endswith("ss"):
+        alts.append(clean_name[:-1])
+    else:
+        alts.append(clean_name + "s")
+
+    if clean_name.endswith("s") and len(clean_name) > 3:
+        stem = clean_name[:-1]
+        if stem not in alts:
+            alts.append(stem)
+
+    search_terms = [item_name] + [a.title() for a in alts]
 
     try:
         products = []
@@ -2380,8 +2458,7 @@ async def _fetch_single_product_block(item_name: str, token: str) -> str:
                 matched.append(prod)
 
         if not matched:
-            rag_answer = await get_rag_response(f"do you sell {item_name}", ...)
-            return rag_answer or f"❌ '{item_name}' is not available right now."
+            return f"❌ '{item_name}' is not available right now."
 
         deduped     = {}
         store_cache = {}
@@ -2643,7 +2720,6 @@ _HALLUCINATION_MARKERS = re.compile(
     re.IGNORECASE,
 )
 
-
 def _query_grounded_in_context(query: str, context: str, min_ratio: float = 0.5) -> bool:
     query_words = set(
         w for w in re.findall(r"[a-z]+", query.lower())
@@ -2654,23 +2730,16 @@ def _query_grounded_in_context(query: str, context: str, min_ratio: float = 0.5)
     matched = sum(1 for w in query_words if w in context.lower())
     return (matched / len(query_words)) >= min_ratio
 
-
 def _llm_response_is_safe(text: str) -> bool:
     return not _HALLUCINATION_MARKERS.search(text)
 
-
 async def _expand_query_for_rag(query: str, memory: dict, session: dict) -> str:
-    """
-    Expand the query with user context before embedding for better retrieval.
-    e.g. "is it available?" + memory → "is onion available sahachari"
-    """
     context_terms = []
     entities      = memory.get("entities", {})
 
     if entities.get("household_size"):
         context_terms.append(entities["household_size"])
 
-    # Pull recent product mentions from history
     history = memory.get("conversation_history", [])
     for msg in reversed(history[-4:]):
         if msg["role"] == "assistant":
@@ -2683,7 +2752,6 @@ async def _expand_query_for_rag(query: str, memory: dict, session: dict) -> str:
     if context_terms:
         return f"{query} {' '.join(context_terms)}"
     return query
-
 
 async def answer_from_history(query: str, conversation_history: list) -> str:
     if qwen_pipeline is None:
@@ -2712,7 +2780,6 @@ async def answer_from_history(query: str, conversation_history: list) -> str:
     except Exception as e:
         log.warning(f"answer_from_history failed: {e}")
         return "ℹ️ I'm not sure what you're referring to. Could you give more details?"
-
 
 async def get_rag_response(
     query: str,
@@ -2743,7 +2810,6 @@ async def get_rag_response(
     try:
         loop = asyncio.get_running_loop()
 
-        # Query expansion (hybrid retrieval)
         expanded_query = await _expand_query_for_rag(query, memory, session)
 
         vec_original = await loop.run_in_executor(None, embedding_model.encode, query)
@@ -2756,7 +2822,6 @@ async def get_rag_response(
         results_a = collection.query(query_embeddings=[vec_original.tolist()], n_results=3)
         results_b = collection.query(query_embeddings=[vec_expanded.tolist()],  n_results=3)
 
-        # Merge and deduplicate chunks
         seen           = set()
         merged_chunks  = []
         docs_a = (results_a.get("documents") or [[]])[0]
@@ -2825,7 +2890,6 @@ async def get_rag_response(
             )
 
         if qwen_pipeline is not None:
-            # Use the optimised LLM context builder
             if memory_store:
                 llm_messages = memory_store.build_llm_context(memory, session, query)
             else:
@@ -2869,7 +2933,6 @@ async def get_rag_response(
 # ─────────────────────────────────────────────────────────────────────────────
 
 async def handle_repair(query: str, memory: dict, session: dict) -> str:
-    """User is correcting the bot — go back one turn and offer to retry."""
     history = memory.get("conversation_history", [])
     if len(history) >= 2:
         last_user_query = history[-2]["content"]
@@ -2882,13 +2945,22 @@ async def handle_repair(query: str, memory: dict, session: dict) -> str:
 
 
 # ─────────────────────────────────────────────────────────────────────────────
+# Normalize confirmation string (strip punctuation/spaces)
+# ─────────────────────────────────────────────────────────────────────────────
+
+def normalize_confirmation(text: str) -> str:
+    """Remove punctuation and normalize spaces for confirmation matching."""
+    cleaned = re.sub(r"[^\w\s]", " ", text.lower().strip())
+    return re.sub(r"\s+", " ", cleaned).strip()
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 # Chat endpoint
 # ─────────────────────────────────────────────────────────────────────────────
 
 class ChatRequest(BaseModel):
     query:      str
     session_id: str
-
 
 @app.post("/chat")
 async def chat_endpoint(req: ChatRequest, authorization: str = Header(None)):
@@ -2910,7 +2982,6 @@ async def chat_endpoint(req: ChatRequest, authorization: str = Header(None)):
             memory_store.get(session_id),
         )
 
-        # Pronoun resolution using session entity tracker
         query = resolve_pronoun(query, current_memory.get("conversation_history", []), current_user_session)
         log.info(f"Resolved query: {query!r}")
 
@@ -2939,24 +3010,54 @@ async def chat_endpoint(req: ChatRequest, authorization: str = Header(None)):
             )
             return {"response": response_text, "cart_updated": False, "action": None}
 
-        # Preference + entity extraction
         memory_store.extract_preferences(current_memory, query)
         memory_context = memory_store.build_context_summary(current_memory)
 
-        # Async history compression (fire-and-forget)
         if len(current_memory.get("conversation_history", [])) > memory_store.SUMMARY_THRESHOLD * 2:
             asyncio.create_task(memory_store.maybe_summarise(current_memory))
 
         response_text    = "I can help you with grocery orders, product info, your cart, wishlist, or order tracking. What would you like to do?"
         items_just_added: list[str] = []
 
-        # ── Pending quantity reply ────────────────────────────────────────────
+        # ── Pending quantity / confirmation reply ─────────────────────────────
         if current_user_session["pending_item"] is not None:
-            q_lower = query.lower().strip()
+            # FIX: normalize confirmation strings to handle punctuation like "yes,add all"
+            q_lower = normalize_confirmation(query)
 
-            if current_user_session.get("pending_intent") == "recipe_confirm":
+            # FIX: checkout_confirm pending intent — "yes" after viewing cart
+            if current_user_session.get("pending_intent") == "checkout_confirm":
+                current_user_session["pending_item"]   = None
+                current_user_session["pending_intent"] = None
                 if q_lower in {"yes", "yeah", "yep", "ok", "okay", "sure", "alright",
-                                "yes add all", "add all", "add them all", "yes please"}:
+                               "checkout", "place order", "confirm", "yes please",
+                               "go ahead", "proceed"}:
+                    response_text, cart_updated = await forward_nestjs_order_placement(authorization)
+                    if cart_updated:
+                        action = "checkout"
+                        current_memory["last_order_summary"] = (
+                            f"Checked out on {datetime.now(timezone.utc).strftime('%Y-%m-%d')}"
+                        )
+                else:
+                    response_text = "No problem! Let me know if you need anything else. 😊"
+                response_text = personalise_response(
+                    response_text, current_memory, current_user_session,
+                    "checkout", items_just_added,
+                )
+                memory_store.add_turn(current_memory, query, response_text)
+                await asyncio.gather(
+                    session_store.save(session_id, current_user_session),
+                    memory_store.save(session_id, current_memory),
+                )
+                return {"response": response_text, "cart_updated": cart_updated, "action": action}
+
+            # FIX: recipe_confirm with normalized confirmation
+            if current_user_session.get("pending_intent") == "recipe_confirm":
+                RECIPE_YES = {
+                    "yes", "yeah", "yep", "ok", "okay", "sure", "alright",
+                    "yes add all", "add all", "add them all", "yes please",
+                    "yes add them", "add all of them", "add everything",
+                }
+                if q_lower in RECIPE_YES:
                     recipe_items = current_user_session.get("recipe_items") or []
                     if recipe_items:
                         response_text = await forward_to_nestjs_cart(
@@ -3044,6 +3145,12 @@ async def chat_endpoint(req: ChatRequest, authorization: str = Header(None)):
                     pending["unit"]     = unit
                     current_user_session["pending_item"]   = None
                     current_user_session["pending_intent"] = None
+
+                    # FIX: After resolving first item, check slot_items for more pending items
+                    slot_items = current_user_session.get("slot_items", [])
+                    remaining  = [i for i in slot_items
+                                  if i["item"].lower() != pending["item"].lower()]
+
                     if intent_pending == "wishlist":
                         response_text = add_to_wishlist([pending], current_user_session)
                     else:
@@ -3053,6 +3160,20 @@ async def chat_endpoint(req: ChatRequest, authorization: str = Header(None)):
                         cart_updated  = True
                         memory_store.record_item_ordered(current_memory, pending["item"], quantity, unit)
                         items_just_added.append(pending["item"])
+
+                    # Ask for next item in the queue
+                    if remaining:
+                        next_pending = remaining[0]
+                        current_user_session["slot_items"]     = remaining
+                        current_user_session["pending_item"]   = next_pending
+                        current_user_session["pending_intent"] = intent_pending or "order"
+                        response_text += (
+                            f"\n\nHow much **{next_pending['item']}** would you like? "
+                            f"(e.g. '1 kg', '500 g')"
+                        )
+                    else:
+                        current_user_session["slot_items"] = []
+
                 else:
                     new_intent, new_conf = detect_intent(query, current_user_session, current_memory)
                     if (new_conf >= 0.8 and new_intent not in ("order", "wishlist")) \
@@ -3060,6 +3181,7 @@ async def chat_endpoint(req: ChatRequest, authorization: str = Header(None)):
                             or new_intent == "rag":
                         current_user_session["pending_item"]   = None
                         current_user_session["pending_intent"] = None
+                        current_user_session["slot_items"]     = []
                         pending_resolved = False
                     else:
                         response_text = (
@@ -3090,8 +3212,21 @@ async def chat_endpoint(req: ChatRequest, authorization: str = Header(None)):
 
         # ── Intent routing ────────────────────────────────────────────────────
         intent, confidence = detect_intent(query, current_user_session, current_memory)
-        if confidence < 0.3:
+
+        # FIX: Clear stale pending state when a clear new order intent arrives
+        if intent == "order" and current_user_session.get("pending_intent") in (
+            "recipe_confirm", "checkout_confirm"
+        ):
+            log.info(f"Clearing stale pending_intent={current_user_session['pending_intent']!r} on new order")
+            current_user_session["pending_item"]   = None
+            current_user_session["pending_intent"] = None
+            current_user_session["recipe_items"]   = None
+            current_user_session["slot_items"]     = []
+
+        if confidence < 0.3 and intent != "checkout":
             intent = "rag"
+        elif confidence < 0.3 and intent == "checkout":
+            log.info("Checkout intent preserved despite low confidence")
 
         log.info(f"Intent: {intent!r} (confidence={confidence:.2f}) for query: {query!r}")
         record_intent(current_user_session, intent)
@@ -3154,6 +3289,10 @@ async def chat_endpoint(req: ChatRequest, authorization: str = Header(None)):
 
         elif intent == "view_cart":
             response_text = await fetch_nestjs_cart_summary(authorization, current_memory)
+            # After showing cart, offer checkout confirmation if cart not empty
+            if "empty" not in response_text.lower():
+                current_user_session["pending_item"]   = {"item": "__checkout__", "quantity": 1, "unit": "piece"}
+                current_user_session["pending_intent"] = "checkout_confirm"
 
         elif intent == "wishlist_remove":
             response_text = remove_from_wishlist(query, current_user_session)
@@ -3183,10 +3322,20 @@ async def chat_endpoint(req: ChatRequest, authorization: str = Header(None)):
 
         elif intent == "status":
             order_id, item_name = extract_order_query_target(query)
-            if re.search(
-                r"\b(all|every|each|full|complete|all my|every single|history|past|previous)\b",
-                query.lower(),
-            ) or re.search(r"\blist (of |my )?orders\b", query.lower()):
+            q_lower_status = query.lower()
+
+            # FIX: Expanded show_all detection
+            show_all = bool(re.search(
+                r"\b(all my orders|all orders|every order|order history|list.*orders|"
+                r"show.*all.*orders|show my orders|my orders|show orders|"
+                r"list.*my.*orders|past orders|previous orders)\b",
+                q_lower_status,
+            )) and not re.search(
+                r"\b(last|latest|recent|current|previous order|my order\b)\b",
+                q_lower_status,
+            )
+
+            if show_all:
                 response_text = await fetch_all_orders_status(authorization)
             else:
                 response_text = await fetch_nestjs_order_status(
@@ -3266,7 +3415,6 @@ async def chat_endpoint(req: ChatRequest, authorization: str = Header(None)):
 
         elif intent == "product_info":
             response_text = await fetch_product_details(query, authorization)
-            # Track viewed items for entity resolution + analytics
             mentioned_names = [c["item"] for c in extract_grocery_items(query) if c.get("item")]
             if not mentioned_names:
                 name_candidate = extract_product_name_from_query(query)
@@ -3275,7 +3423,6 @@ async def chat_endpoint(req: ChatRequest, authorization: str = Header(None)):
             update_entity_tracker(current_user_session, mentioned_names)
             for mn in mentioned_names:
                 record_product_viewed(current_user_session, mn)
-            # Update Tier-2 entity store
             entities = current_memory.setdefault("entities", {})
             existing_seen = entities.get("last_seen_products", [])
             for mn in mentioned_names:
@@ -3426,7 +3573,6 @@ async def chat_endpoint(req: ChatRequest, authorization: str = Header(None)):
                     ingredient_list = ingredients;  dish = key.title();  break
 
             if ingredient_list:
-                # Filter out allergies from recipe suggestions
                 ingredient_list = memory_store.get_safe_suggestions(current_memory, ingredient_list)
 
                 product_lookups = await asyncio.gather(
@@ -3469,13 +3615,9 @@ async def chat_endpoint(req: ChatRequest, authorization: str = Header(None)):
 
         elif intent == "order":
             q_lower       = query.lower()
-            wants_checkout = (
-                BUY_NOW_PATTERNS.search(query)
-                or bool(re.search(r"\bnow\s*[.!?]?$", q_lower))
-                or bool(re.search(
-                    r"\b(order now|buy now|place order|i want to order|proceed|checkout now)\b", q_lower,
-                ))
-            )
+
+            # FIX: "now" at end of string triggers buy_now
+            wants_checkout = bool(BUY_NOW_PATTERNS.search(query))
 
             if "wishlist" in query.lower():
                 if current_user_session["wishlist"]:
@@ -3488,7 +3630,8 @@ async def chat_endpoint(req: ChatRequest, authorization: str = Header(None)):
                     current_user_session["wishlist"].clear()
                     cart_updated = True
                 else:
-                    response_text = "Your wishlist is empty. Nothing to add!"
+                    response_text  = "Your wishlist is empty. Nothing to add!"
+                    wants_checkout = False
             else:
                 items = extract_grocery_items(query)
 
@@ -3499,7 +3642,6 @@ async def chat_endpoint(req: ChatRequest, authorization: str = Header(None)):
                         items.append({"item": service_name, "quantity": 1, "unit": "piece"})
 
                 if items:
-                    # Auto-fill remembered quantities
                     for it in items:
                         if it["quantity"] is None and not is_service_item(it["item"]):
                             rem_qty, rem_unit = memory_store.get_preferred_quantity(
@@ -3526,7 +3668,9 @@ async def chat_endpoint(req: ChatRequest, authorization: str = Header(None)):
                             items_just_added.append(it["item"])
                         update_entity_tracker(current_user_session, [i["item"] for i in service_items])
 
+                    # FIX: Queue ALL missing-qty items in slot_items, ask for first
                     if missing_qty:
+                        current_user_session["slot_items"]     = missing_qty
                         pending = missing_qty[0]
                         current_user_session["pending_item"]   = pending
                         current_user_session["pending_intent"] = "order"
@@ -3536,16 +3680,20 @@ async def chat_endpoint(req: ChatRequest, authorization: str = Header(None)):
                         )
                         wants_checkout = False
 
-                    response_text = "\n\n".join(lines)
+                    response_text = "\n\n".join(lines) if lines else "I couldn't figure out which items you'd like. Try: 'I want 2 kg onions'."
                 else:
                     response_text  = "I couldn't figure out which items you'd like. Try: 'I want 2 kg onions'."
                     wants_checkout = False
 
+            # FIX: "now" checkout — add items first, then trigger checkout
             if wants_checkout and cart_updated:
-                action = "checkout"
-                current_memory["last_order_summary"] = (
-                    f"Checked out on {datetime.now(timezone.utc).strftime('%Y-%m-%d')}"
-                )
+                checkout_msg, checkout_ok = await forward_nestjs_order_placement(authorization)
+                if checkout_ok:
+                    action = "checkout"
+                    response_text += f"\n\n{checkout_msg}"
+                    current_memory["last_order_summary"] = (
+                        f"Checked out on {datetime.now(timezone.utc).strftime('%Y-%m-%d')}"
+                    )
 
             response_text = personalise_response(
                 response_text, current_memory, current_user_session, "order", items_just_added,
